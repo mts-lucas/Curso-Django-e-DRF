@@ -1,6 +1,7 @@
 {% extends 'global/base.html' %}
 
-{% block tittle %}Category{% endblock tittle %}
+{% comment %} {% block tittle %}Category{% endblock tittle %} {% endcomment %}
+{% block tittle %}{{ title }}{% endblock tittle %}
 
 {% block content %}
 <div class="main-content container main-content-list">
