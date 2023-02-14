@@ -7,26 +7,8 @@ from recipes.models import Category, Recipe, User
 
 class RecipeViewsTest(TestCase):
 
-    def test_recipe_home_view_function_is_correct(self):
-        view = resolve(reverse('recipes:home'))
-        self.assertIs(view.func, views.home)
+    def setUp(self) -> None:
 
-    def test_recipe_home_view_returns_status_code_200_OK(self):
-        response = self.client.get(reverse('recipes:home'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_recipe_home_view_loads_correct_template(self):
-        response = self.client.get(reverse('recipes:home'))
-        self.assertTemplateUsed(response, 'recipes/pages/home.html')
-
-    def test_recipe_home_template_shows_no_recipes_found_if_no_recipes(self):
-        response = self.client.get(reverse('recipes:home'))
-        self.assertIn(
-            '<h1>No recipes Found here</h1>',
-            response.content.decode('utf-8')
-        )
-
-    def test_recipe_home_template_loads_recipes(self):
         category = Category.objects.create(name='Category')
         author = User.objects.create_user(
             first_name='user',
@@ -49,7 +31,30 @@ class RecipeViewsTest(TestCase):
             preparation_steps_is_html=False,
             is_published=True,
         )
-        
+
+        return super().setUp()
+
+    def test_recipe_home_view_function_is_correct(self):
+        view = resolve(reverse('recipes:home'))
+        self.assertIs(view.func, views.home)
+
+    def test_recipe_home_view_returns_status_code_200_OK(self):
+        response = self.client.get(reverse('recipes:home'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_recipe_home_view_loads_correct_template(self):
+        response = self.client.get(reverse('recipes:home'))
+        self.assertTemplateUsed(response, 'recipes/pages/home.html')
+
+    def test_recipe_home_template_shows_no_recipes_found_if_no_recipes(self):
+        Recipe.objects.get(pk=1).delete()
+        response = self.client.get(reverse('recipes:home'))
+        self.assertIn(
+            '<h1>No recipes Found here</h1>',
+            response.content.decode('utf-8')
+        )
+
+    def test_recipe_home_template_loads_recipes(self):
         response = self.client.get(reverse('recipes:home'))
         content = response.content.decode('utf-8')
         response_context_recipes = response.context['recipes']
