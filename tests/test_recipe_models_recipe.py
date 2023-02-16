@@ -48,5 +48,4 @@ class RecipeModelTest(RecipeTestBase):
         recipe = self.make_recipe_no_defaults()
         self.assertFalse(
             recipe.is_published,
-            msg='Recipe is_published is not False',
-        
+            msg='Recipe is_published is not False',)
